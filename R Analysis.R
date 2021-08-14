@@ -8,15 +8,21 @@ getwd()
 #import data set
 Ridesharing <- import("rideshare_kaggle.csv")
 
+#Remove records with missing prices
+55095 / 693071  #7.94%
+Ridesharing <- Ridesharing[complete.cases(Ridesharing),]
+
+#Summary stats for proposal
 str(Ridesharing)
 head(Ridesharing)
 summary(Ridesharing)
 
-#Remove records with missing prices
-55095 / 693071  #7.94%
-Rides <- 
+#Select desired features and convert character features to factors
+Rides <- Ridesharing[,c('datetime','hour','source','destination','cab_type',
+                     'name','price','distance','surge_multiplier','temperature',
+                     'short_summary','precipProbability','windSpeed','visibility',
+                     'moonPhase')]
 
-#Summary stats for proposal
 
 #Split into Uber and Lyft Datasets
 
@@ -38,3 +44,16 @@ Rides <-
 
 #Prediction Accuracy
 
+### Clean Up ###################################################################
+
+# Clear Packages
+p_unload(all)   #For pacman and extra packages
+
+# Clear Plots, if there are any
+dev.off()
+
+# Clear global environment
+rm(list = ls())
+
+# Clear Console CTRL+L
+cat("\014")
