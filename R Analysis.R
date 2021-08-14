@@ -7,6 +7,7 @@ getwd()
 
 #import data set
 Ridesharing <- import("rideshare_kaggle.csv")
+summary(Ridesharing)
 
 #Remove records with missing prices
 55095 / 693071  #7.94%
@@ -17,22 +18,40 @@ str(Ridesharing)
 head(Ridesharing)
 summary(Ridesharing)
 
-#Select desired features and convert character features to factors
-Rides <- Ridesharing[,c('datetime','hour','source','destination','cab_type',
-                     'name','price','distance','surge_multiplier','temperature',
-                     'short_summary','precipProbability','windSpeed','visibility',
-                     'moonPhase')]
+#Select desired features
+Rides <- Ridesharing[,c('datetime','hour','cab_type','name','price','distance',
+                        'surge_multiplier','temperature',
+                        'short_summary','precipProbability','windSpeed',
+                        'visibility','moonPhase')]
 
+#Convert datetime to dayofweek
+Rides$datetime <- weekdays(Rides$datetime)
+colnames(Rides)[1] <- 'weekday'
+
+#Convert characters into factors to check levels
+Rides$weekday <- as.factor(Rides$weekday)
+Rides$source <- as.factor(Rides$source)
+Rides$destination <- as.factor(Rides$destination)
+Rides$cab_type <- as.factor(Rides$cab_type)
+Rides$name <- as.factor(Rides$name)
+Rides$short_summary <- as.factor(Rides$short_summary)
 
 #Split into Uber and Lyft Datasets
+Uber <- subset(Rides, cab_type=='Uber',)
+Lyft <- subset(Rides, cab_type=='Lyft',)
 
 #Summary stats for Uber
+summary(Uber)
 
 #Summary stats for Lyft
+summary(Lyft)
 
 #Set table equal to Company for current analysis
+Analyze <- Uber
 
 #Check regression assumptions
+
+#Check for collinearity
 
 #Feature selection
 
