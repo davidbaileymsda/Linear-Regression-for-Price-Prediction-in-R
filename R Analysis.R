@@ -21,7 +21,7 @@ summary(Ridesharing)
 #Select desired features
 Rides <- Ridesharing[,c('datetime','hour','cab_type','name','price','distance',
                         'surge_multiplier','temperature',
-                        'short_summary','precipProbability','windSpeed',
+                        'precipProbability','windSpeed',
                         'visibility','moonPhase')]
 
 #Convert datetime to dayofweek
@@ -30,11 +30,12 @@ colnames(Rides)[1] <- 'weekday'
 
 #Convert characters into factors to check levels
 Rides$weekday <- as.factor(Rides$weekday)
-Rides$source <- as.factor(Rides$source)
-Rides$destination <- as.factor(Rides$destination)
 Rides$cab_type <- as.factor(Rides$cab_type)
 Rides$name <- as.factor(Rides$name)
 Rides$short_summary <- as.factor(Rides$short_summary)
+
+#Check and order levels, if needed
+levels(Rides$weekday)
 
 #Split into Uber and Lyft Datasets
 Uber <- subset(Rides, cab_type=='Uber',)
@@ -53,7 +54,7 @@ Analyze <- Uber
 
 #Check for collinearity
 
-#Feature selection
+#Feature selection (t-statistics and p-values)
 
 #Split into Training/Validation Sets
 
