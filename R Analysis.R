@@ -18,11 +18,19 @@ str(Ridesharing)
 head(Ridesharing)
 summary(Ridesharing)
 
+#Correlation Matrix for collinearity
+Numeric <- Ridesharing[,c('hour','price','distance','surge_multiplier','temperature','precipProbability','windSpeed','visibility','moonPhase')]
+CM <- cor(Numeric)
+
+png("Correlation Matrix.png")
+corrplot(CM, method = 'number', title = 'Correlation Matrix for Numeric Variables',
+         mar = c(0,0,2,0), tl.col = 'black')
+dev.off()
+
 #Select desired features
 Rides <- Ridesharing[,c('datetime','hour','cab_type','name','price','distance',
                         'surge_multiplier','temperature',
-                        'precipProbability','windSpeed',
-                        'visibility','moonPhase')]
+                        'precipProbability','windSpeed', 'moonPhase')]
 
 #Convert datetime to dayofweek
 Rides$datetime <- weekdays(Rides$datetime)
