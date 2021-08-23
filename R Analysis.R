@@ -1,5 +1,5 @@
 #install.packages("pacman")
-pacman::p_load(pacman, broom, dplyr, GGally, ggplot2, ggthemes, ggvis, httr, lubridate, plotly, rio, rmarkdown, shiny, stringr, tidyr, psych)
+pacman::p_load(pacman, broom, caret, corrplot, dplyr, GGally, ggplot2, ggthemes, ggvis, httr, lubridate, plotly, rio, rmarkdown, shiny, stringr, tidyr, psych)
 
 #set working directory
 setwd("C:/Users/david/Desktop/Data Analytics Capstone/Task 1/Data & Analysis")
@@ -20,7 +20,7 @@ summary(Ridesharing)
 unique(Ridesharing$name)
 
 #Correlation Matrix for collinearity
-Numeric <- Ridesharing[,c('hour','distance','surge_multiplier',
+Numeric <- Ridesharing[,c('hour','distance','price','surge_multiplier',
                           'temperature','precipProbability','windSpeed',
                           'visibility','moonPhase')]
 CM <- cor(Numeric)
@@ -57,29 +57,85 @@ Uber$cab_type <- NULL
 Lyft$cab_type <- NULL
 
 #Split into Training/Validation Sets
+UberPartition <- createDataPartition(Uber$price, p=0.7, list = FALSE)
+set.seed(127)
+UTrain <- Uber[UberPartition,]
+UValidate <- Uber[-UberPartition,]
 
+dim(UTrain)
+dim(UValidate)
+
+LyftPartition <- createDataPartition(Lyft$price, p=0.7, list = FALSE)
+set.seed(127)
+LTrain <- Lyft[LyftPartition,]
+LValidate <- Lyft[-LyftPartition,]
+
+dim(LTrain)
+dim(LValidate)
 
 #Summary stats for Training
-summary(Analyze)
+summary(UTrain)
+summary(LTrain)
 
-#Set data frame equal to Company for current analysis
-Analyze <- Uber
+###UBER BRANCH###
 
 #Feature selection and model creation (t-statistics and p-values)
-model <- lm(price ~ ., data=Analyze)
-summary(model)
+Uinitialmodel <- lm(price ~ ., data=UTrain)
+summary(Uinitialmodel)
+
+#Refined model
+Umodel <- lm(price ~ name + weekday + windSpeed + distance, data=UTrain)
+summary(Umodel)
 
 #Assumptions - Mean of residuals is zero (PASS)
-mean(model$residuals)
+mean(Umodel$residuals)
 
 #Assumptions - Homoscedasticity, or equal variance, of residuals (PASS)
-#Assumptions - Normality of residuals (Mostly PASS - Does slop off at higher Quantiles?)
 par(mfrow=c(2,2))
-plot(model)
+plot(Umodel)
 
-#Test on Validation Set
+#Test on Validation Set and calculate RMSE and R Square for prediction accuracy
+Uprediction <- as.numeric(predict(Umodel, newdata = UValidate))
+summary(Uprediction)
+Uerrors <- as.vector(UValidate$price - as.numeric(Uprediction))
+summary(Uerrors)
 
-#Prediction Accuracy
+RMSE(Uprediction, UValidate$price)
+R2(Uprediction, UValidate$price)
+
+#Plot predicted vs actual values
+plot(Uprediction,UValidate$price,
+     xlab="predicted",ylab="actual",main="Predicted vs. actual values - Uber")
+
+###LYFT BRANCH###
+
+#Feature selection and model creation (t-statistics and p-values)
+Linitialmodel <- lm(price ~ ., data=LTrain)
+summary(Linitialmodel)
+
+#Refined model
+Lmodel <- lm(price ~ name + surge_multiplier + distance, data=LTrain)
+summary(Lmodel)
+
+#Assumptions - Mean of residuals is zero (PASS)
+mean(Lmodel$residuals)
+
+#Assumptions - Homoscedasticity, or equal variance, of residuals (PASS)
+par(mfrow=c(2,2))
+plot(Lmodel)
+
+#Test on Validation Set and calculate RMSE and R Square for prediction accuracy
+Lprediction <- as.numeric(predict(Lmodel, newdata = LValidate))
+summary(Lprediction)
+Lerrors <- as.vector(LValidate$price - as.numeric(Lprediction))
+summary(Lerrors)
+
+RMSE(Lprediction, LValidate$price)
+R2(Lprediction, LValidate$price)
+
+#Plot predicted vs actual values
+plot(Lprediction,LValidate$price,
+     xlab="predicted",ylab="actual",main="Predicted vs. actual values - Lyft")
 
 ### Clean Up ###################################################################
 
