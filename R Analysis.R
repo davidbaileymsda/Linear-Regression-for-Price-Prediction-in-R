@@ -1,5 +1,5 @@
 #install.packages("pacman")
-pacman::p_load(pacman, dplyr, GGally, ggplot2, ggthemes, ggvis, httr, lubridate, plotly, rio, rmarkdown, shiny, stringr, tidyr, psych)
+pacman::p_load(pacman, broom, dplyr, GGally, ggplot2, ggthemes, ggvis, httr, lubridate, plotly, rio, rmarkdown, shiny, stringr, tidyr, psych)
 
 #set working directory
 setwd("C:/Users/david/Desktop/Data Analytics Capstone/Task 1/Data & Analysis")
@@ -17,9 +17,12 @@ Ridesharing <- Ridesharing[complete.cases(Ridesharing),]
 str(Ridesharing)
 head(Ridesharing)
 summary(Ridesharing)
+unique(Ridesharing$name)
 
 #Correlation Matrix for collinearity
-Numeric <- Ridesharing[,c('hour','price','distance','surge_multiplier','temperature','precipProbability','windSpeed','visibility','moonPhase')]
+Numeric <- Ridesharing[,c('hour','distance','surge_multiplier',
+                          'temperature','precipProbability','windSpeed',
+                          'visibility','moonPhase')]
 CM <- cor(Numeric)
 
 png("Correlation Matrix.png")
@@ -49,24 +52,30 @@ levels(Rides$weekday)
 Uber <- subset(Rides, cab_type=='Uber',)
 Lyft <- subset(Rides, cab_type=='Lyft',)
 
-#Summary stats for Uber
-summary(Uber)
-
-#Summary stats for Lyft
-summary(Lyft)
-
-#Set table equal to Company for current analysis
-Analyze <- Uber
-
-#Check regression assumptions
-
-#Check for collinearity
-
-#Feature selection (t-statistics and p-values)
+#Remove cab_type feature from data frames
+Uber$cab_type <- NULL
+Lyft$cab_type <- NULL
 
 #Split into Training/Validation Sets
 
-#Regression Model
+
+#Summary stats for Training
+summary(Analyze)
+
+#Set data frame equal to Company for current analysis
+Analyze <- Uber
+
+#Feature selection and model creation (t-statistics and p-values)
+model <- lm(price ~ ., data=Analyze)
+summary(model)
+
+#Assumptions - Mean of residuals is zero (PASS)
+mean(model$residuals)
+
+#Assumptions - Homoscedasticity, or equal variance, of residuals (PASS)
+#Assumptions - Normality of residuals (Mostly PASS - Does slop off at higher Quantiles?)
+par(mfrow=c(2,2))
+plot(model)
 
 #Test on Validation Set
 
