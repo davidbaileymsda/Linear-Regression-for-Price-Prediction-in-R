@@ -84,15 +84,15 @@ Uinitialmodel <- lm(price ~ ., data=UTrain)
 summary(Uinitialmodel)
 
 #Refined model
-Umodel <- lm(price ~ name + weekday + windSpeed + distance, data=UTrain)
+Umodel <- lm(price ~ name + weekday + distance, data=UTrain)
 summary(Umodel)
 
-#Assumptions - Mean of residuals is zero (PASS)
+#Assumptions - Mean of residuals is zero
 mean(Umodel$residuals)
 
-#Assumptions - Homoscedasticity, or equal variance, of residuals (PASS)
+#Assumptions - Homoscedasticity, or equal variance, of residuals
 par(mfrow=c(2,2))
-plot(Umodel)
+plot(Umodel, main = 'Uber Residuals Plots')
 
 #Test on Validation Set and calculate RMSE and R Square for prediction accuracy
 Uprediction <- as.numeric(predict(Umodel, newdata = UValidate))
@@ -102,10 +102,6 @@ summary(Uerrors)
 
 RMSE(Uprediction, UValidate$price)
 R2(Uprediction, UValidate$price)
-
-#Plot predicted vs actual values
-plot(Uprediction,UValidate$price,
-     xlab="predicted",ylab="actual",main="Predicted vs. actual values - Uber")
 
 ###LYFT BRANCH###
 
@@ -117,12 +113,12 @@ summary(Linitialmodel)
 Lmodel <- lm(price ~ name + surge_multiplier + distance, data=LTrain)
 summary(Lmodel)
 
-#Assumptions - Mean of residuals is zero (PASS)
+#Assumptions - Mean of residuals is zero 
 mean(Lmodel$residuals)
 
-#Assumptions - Homoscedasticity, or equal variance, of residuals (PASS)
+#Assumptions - Homoscedasticity, or equal variance, of residuals 
 par(mfrow=c(2,2))
-plot(Lmodel)
+plot(Lmodel, main = 'Lyft Residuals Plots')
 
 #Test on Validation Set and calculate RMSE and R Square for prediction accuracy
 Lprediction <- as.numeric(predict(Lmodel, newdata = LValidate))
@@ -133,9 +129,6 @@ summary(Lerrors)
 RMSE(Lprediction, LValidate$price)
 R2(Lprediction, LValidate$price)
 
-#Plot predicted vs actual values
-plot(Lprediction,LValidate$price,
-     xlab="predicted",ylab="actual",main="Predicted vs. actual values - Lyft")
 
 ### Clean Up ###################################################################
 
