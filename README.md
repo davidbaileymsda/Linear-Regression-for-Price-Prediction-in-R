@@ -1,54 +1,40 @@
-# Capstone-Project
+# Competitor Pricing for Ridesharing Services – Executive Summary 
 
-For your capstone you will identify an original real-data research question and propose a project to address it. In later tasks you will be asked to gather, analyze, and present data related to your research question.
+## Problem
+Uber and Lyft are the two ridesharing services with the greatest reach and market share in the United States, and 87% of ridesharing users exclusively use one of the two leading services, but not both. Because of this brand loyalty, the price of rides could prove one of the most important competitive advantages in the industry, especially for a user’s first rides. Clearly, predicting competitor pricing would be extremely valuable.
 
-Create a report (suggested length of approximately 15–20 written pages) by doing the following:
+## Hypothesis
+H0: Factors do not affect ridesharing prices.
 
-A.  Research Question
-Summarize the original real-data research question you identified in task 1. Your summary should include justification for the research question you identified in task 1, a description of the context in which the research question exists, and a discussion of your hypothesis.
- 
-B.  Data Collection
-Report on your data-collection process by describing the relevant data you collected, discussing any advantages and disadvantages of the data-gathering methodology you used, and discussing how you overcame any challenges you encountered during the process of collecting your data.
- 
-C.  Data Extraction and Preparation
-Describe your data-extraction and -preparation process and provide screenshots to illustrate each step. Explain the tools and techniques you used for data extraction and data preparation, including how these tools and techniques were used on the data. Justify why you used these particular tools and techniques, including any advantages or disadvantages of these when used with your data-extraction and -preparation methods.
- 
-D.  Analysis
-Report on your data-analysis process by describing the analysis technique(s) you used to appropriately analyze the data and by justifying the tools used in your data analysis. Include the calculations you performed and their outputs. Justify how you selected the analysis technique(s) you used, including any advantages or disadvantages of these technique(s).
- 
-E.  Data Summary and Implications
-Summarize the implications of your data analysis by discussing the results of your data analysis in the context of the research question, including any limitations of your analysis. Within the context of your research question, recommend a course of action based on your results. Then propose two directions or approaches for future study of the data set.
- 
-F.  Acknowledge sources, using in-text citations and references, for content that is quoted, paraphrased, or summarized.
+H1: Factors do affect ridesharing prices and ride price can be predicted. 
 
-------------------------------------------------------------------------------------------------------------------------
+This study looks at various ride, vehicle, and weather variables to consider which variables lead to higher ride price and an accurate price prediction. 
 
-In the professional field, you will often be asked to present complex data and findings to your data analytics peers as well as to people who have little or no experience with data mining and analytics. You will need to demonstrate effective communication skills to present your findings to different audiences.
+## Data analysis
+The dataset of 693,071 observations of ridesharing cases used for this study was gathered from Uber and Lyft API queries and corresponding weather conditions over a couple of weeks between November and early December 2018 in the Boston, Massachusetts area. Many redundant variables were removed to avoid multicollinearity, and 7.9% of the observations were deleted since they were missing values in the dependent variable, price. All other variables contained no missing values. 
 
-For this task, you will create an executive summary of your findings from task 2 and then use Panopto to record yourself delivering a presentation of that summary. Your presentation will also include slides displayed by a multimedia tool (e.g., PowerPoint, Keynote, Prezi). This presentation will reiterate, in laymen’s terms, your findings from task 2.
+Linear regression was used in R on the two subsets of data, one for the Uber observations and one for the Lyft observations, to compare t-statistics and their associated p-values. Type of vehicle, day of the week, and distance were the statistically significant independent variables for the Uber model, and type of vehicle, surge multiplier, and distance for the Lyft model. The two models met the assumptions of linear regression. The models were trained on a 70% training dataset and had the predictions assessed with a 30% validation dataset. 
 
-A.  Executive Summary and Implications
-Develop an executive summary using your data and results from task 2. The summary should be written for an audience of your data-analytics peers or members of your team and should include each of the following:
- 
-•  a statement of the problem and the hypothesis
-•  a summary of the data-analysis process
-•  an outline of the findings
-•  an explanation of the limitations of the techniques and tools used
-•  a summary of proposed actions
-•  expected benefits of the study (be as specific and quantitative as possible)
- 
-B.  Presentation of Findings
+## Findings
+Both models had high R2 values over .90, suggesting that the models account for over 90% of the variation in price. The root mean square error for the models was under 2.53, meaning the average predicted value was $2.53 different than actual.
 
-1.  Present your executive summary from part A to an audience of nonpractitioners. Use Panopto to record yourself delivering a presentation that includes slides displayed by a multimedia tool (e.g., PowerPoint, Keynote, Prezi). Your recording should capture both you and your multimedia presentation. Your presentation should also demonstrate appropriate communication skills for the audience.
+Based on these strong model goodness-of-fit tests, the null hypothesis was rejected in favor of the alternative, that factors do affect ridesharing price and price can be predicted. The independent variables mentioned in the analysis and model creation above do have a significant effect on price and can predict price when used together. 
 
-2.  Your presentation should cover each of the following points:
- 
-•  a brief introduction of yourself and your background
-•  a statement of the problem and the hypothesis
-•  a summary of the data-analysis process
-•  an outline of the findings
-•  an explanation of the limitations of the techniques and tools used
-•  a summary of proposed actions
-•  expected benefits of the study (be as specific and quantitative as possible)
- 
-C.  Acknowledge sources, using in-text citations and references, for content that is quoted, paraphrased, or summarized.
+For Uber, rides on a Saturday, in a Black SUV type were most expensive. For Lyft, rides during a surge period, in a Black XL type were the most expensive. Distance is also positively correlated with price in both models.
+
+## Limitations
+The primary limitations of the study are the availability of variables, the location of the observations, and the period the data was gathered in. Some variables, such as number of drivers available and number of users currently needing rides in the area might also be significant if they were available. Data from all around the country would lead to a model that generalizes better to the country than the Boston data available. Observations from an entire calendar year would give more insight into if weather data is correlated with price. 
+
+Using a linear model, even if the assumptions of linear regression are met, is a delimitation that I placed on the study. The Lyft residuals plot pattern is unique, so it might be worth looking at with different models.
+
+## Expected benefits
+•	Analysts at ridesharing services can use these models to predict competitor price in the Boston area and could deploy them with current observations, should they become available. This could help determine best day of the week for promotions, which vehicle types to promote, distance priority, and pricing strategies.
+
+•	Ridesharing users in the Boston area can use the linear model to predict pricing for the two ridesharing services based on the model variables.
+
+## Proposed actions
+•	Gather more data using the API to include other cities and states. Urban, suburban, and rural areas might share similar pricing even across state lines. Gathering over a longer time period could result in better significance for the weather variables. 
+
+•	Run a similar regression model on recent observations since the outbreak of COVID-19. It is likely that average price saw a large drop and then a rise in 2021.
+
+•	Determine if other data points are available, such as number of people currently seeking a ride and number of drivers currently available. These factors might also be significant.
